@@ -1,13 +1,40 @@
 CacheRecord
 ===========
 
-Introduction goes here.
+An easy to use and lightweight library to cache ActiveRecord objects using a caching system like MemCache.
 
 
 Example
 =======
 
-Example goes here.
+Caching lookups using finders
+-----------------------------
+
+class User < ActiveRecord::Base
+  cache_record_by :id, :user_name
+end
+
+This will cause lookups like
+User.find_by_id(1) to be cached, so subsequent lookups will not hit the database.
+
+User.find_by_username("tusharr") will also be cached
 
 
-Copyright (c) 2009 [name of plugin creator], released under the MIT license
+Caching lookups for singleton class objects
+--------------------------------------------
+
+class GlobalSetting < ActiveRecord::Base
+  def self.instance
+    first || new
+  end
+  
+  cache_record_instance  
+end
+
+All calls to GlobalSetting.instance will be cached and will not hit the database
+
+The plugin handles cache invalidation for cached objects on updates & deletes.
+
+
+Copyright (c) 2009 Tushar Ranka, released under the MIT license
+
